@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %} Trang chủ {% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8 mx-auto">
+    <div class="card mb-4">
+      <div class="card-header">Danh sách công việc</div>
+      <ul class="list-group list-group-flush" id="tasks">
+    {% for task in tasks %}
+    <li class="list-group-item" id="task-{{task.id}}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div><strong>{{ task.title }}</strong></div>
+                <div class="small text-muted">
+                    {{ task.status }} · {{ task.priority }} ·
+                    {{ task.start_date if task.start_date else '-' }} → {{ task.end_date if task.end_date else '-' }}
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleTaskEdit({{task.id}})">Sửa</button>
+                <button type="button" class="close ml-2" onClick="deleteTask({{ task.id }})"><span aria-hidden="true">&times</span></button>
+            </div>
+        </div>
+        <div class="mt-3 d-none" id="task-edit-{{task.id}}">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label class="small mb-1">Trạng thái</label>
+                    <select class="form-control form-control-sm" id="edit-status-{{task.id}}">
+                        <option value="Đã Xong" {% if task.status=='Đã Xong' %}selected{% endif %}>Đã Xong</option>
+                        <option value="Chưa xong" {% if task.status=='Chưa xong' %}selected{% endif %}>Chưa xong</option>
+                        <option value="Đang tiến hành" {% if task.status=='Đang tiến hành' %}selected{% endif %}>Đang tiến hành</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="small mb-1">Ưu tiên</label>
+                    <select class="form-control form-control-sm" id="edit-priority-{{task.id}}">
+                        <option value="Cao" {% if task.priority=='Cao' %}selected{% endif %}>Cao</option>
+                        <option value="Trung bình" {% if task.priority=='Trung bình' %}selected{% endif %}>Trung bình</option>
+                        <option value="Dễ" {% if task.priority=='Dễ' %}selected{% endif %}>Dễ</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="small mb-1">Ngày bắt đầu</label>
+                    <input type="date" class="form-control form-control-sm" id="edit-start-{{task.id}}" value="{{ task.start_date }}" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="small mb-1">Ngày kết thúc</label>
+                    <input type="date" class="form-control form-control-sm" id="edit-end-{{task.id}}" value="{{ task.end_date }}" />
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-success" onclick="saveTaskEdit({{task.id}})">Lưu</button>
+                <button class="btn btn-sm btn-secondary" onclick="toggleTaskEdit({{task.id}})">Hủy</button>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+    {% if tasks|length == 0 %}
+    <li class="list-group-item">Chưa có công việc nào</li>
+    {% endif %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Thêm công việc</div>
+      <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="form_type" value="task" />
+            <div class="form-group">
+                <label for="title">Công việc</label>
+                <input name="title" id="title" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-success">Thêm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

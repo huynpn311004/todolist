@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %} Hồ sơ {% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8 mx-auto">
+    <div class="card mb-4">
+      <div class="card-header">Hồ sơ cá nhân</div>
+      <div class="card-body">
+        <form method="POST">
+          <input type="hidden" name="form_type" value="info" />
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required />
+              </div>
+              <div class="form-group col-md-6">
+                  <label for="user_name">Tên đăng nhập</label>
+                  <input type="text" id="user_name" name="user_name" class="form-control" value="{{ user.user_name }}" required />
+              </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Đổi mật khẩu</div>
+      <div class="card-body">
+        <form method="POST">
+          <input type="hidden" name="form_type" value="password" />
+          <div class="form-row">
+              <div class="form-group col-md-4">
+                  <label for="current_password">Mật khẩu hiện tại</label>
+                  <input type="password" id="current_password" name="current_password" class="form-control" required />
+              </div>
+              <div class="form-group col-md-4">
+                  <label for="new_password">Mật khẩu mới</label>
+                  <input type="password" id="new_password" name="new_password" class="form-control" required />
+              </div>
+              <div class="form-group col-md-4">
+                  <label for="confirm_password">Xác nhận mật khẩu mới</label>
+                  <input type="password" id="confirm_password" name="confirm_password" class="form-control" required />
+              </div>
+          </div>
+          <button type="submit" class="btn btn-success">Đổi mật khẩu</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
