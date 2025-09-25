@@ -3,15 +3,19 @@ import os
 from dotenv import load_dotenv
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask import current_app
 from datetime import timedelta
 from sqlalchemy import text
+
+
 
 load_dotenv()
 SECRET_KEY = os.environ.get("KEY")
 DB_NAME = os.environ.get("DB_NAME")
 
 db = SQLAlchemy()
+mail = Mail()
 
 def create_database(app):
     if not os.path.exists("todolist/" + DB_NAME):
@@ -23,12 +27,21 @@ def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = SECRET_KEY
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
+    
+    # Email configuration
+    app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+    app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", 587))
+    app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS", "true").lower() in ["true", "on", "1"]
+    app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+    app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+    app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME", "noreply@todolist.com")
 
     db.init_app(app)
+    mail.init_app(app)
 
     from .views import views
     from .user import user
-    from .models import User, Task
+    from .models import User, Task, PasswordResetToken
     from .admin import admin
     
     create_database(app)
@@ -63,7 +76,9 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.login_view = "user.login"
+    login_manager.login_message = "Vui lòng đăng nhập để truy cập trang này."
     login_manager.init_app(app)
+    
     app.permanent_session_lifetime = timedelta(minutes=1)
 
     @login_manager.user_loader

@@ -22,6 +22,12 @@
           </div>
           <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
         </form>
+        <div class="text-center mt-3">
+          <a href="{{ url_for('user.forgot_password') }}" class="text-decoration-none">Quên mật khẩu?</a>
+        </div>
+        <div class="text-center mt-2">
+          <a href="{{ url_for('user.signup') }}" class="text-decoration-none">Chưa có tài khoản? Đăng ký</a>
+        </div>
       </div>
     </div>
   </div>
